@@ -218,7 +218,7 @@ function calculateProgress() {
 
 
 
-    let totalSurahs = 114; // مجموع سور القرآن الكريم
+    let totalSurahs = 114; // عدد سور القرآن الكريم
 
     let completedSurahs = 0; // عدد السور المختارة
 
@@ -226,15 +226,15 @@ function calculateProgress() {
 
 
 
-    // تحويل قائمة السور المختارة إلى مصفوفة للحصول على الأسماء
+    // تحويل قائمة السور المختارة إلى مصفوفة للحصول على أسماء السور
 
-    let selectedSurahs = [...checkedBoxes].map(box => box.dataset.surah);
+    let selectedSurahs = new Set([...checkedBoxes].map(box => box.dataset.surah));
 
 
 
     // حساب عدد السور المختارة
 
-    completedSurahs = selectedSurahs.length;
+    completedSurahs = selectedSurahs.size;
 
 
 
@@ -242,7 +242,7 @@ function calculateProgress() {
 
     Object.keys(juzSurahs).forEach(juz => {
 
-        let allSurahsCompleted = juzSurahs[juz].every(surah => selectedSurahs.includes(surah));
+        let allSurahsCompleted = juzSurahs[juz].every(surah => selectedSurahs.has(surah));
 
         if (allSurahsCompleted) {
 
