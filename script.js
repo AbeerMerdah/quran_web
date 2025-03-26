@@ -201,41 +201,90 @@ function calculateProgress() {
 
     const checkedBoxes = document.querySelectorAll("input[type='checkbox']:checked");
 
-
-
-    // إنشاء مجموعة للأجزاء المكتملة
-
-    const completedJuz = new Set();
-
+   
     
-
-    checkedBoxes.forEach(checkbox => {
-
-        const juzList = JSON.parse(checkbox.dataset.juz); // استرجاع قائمة الأجزاء
-
-        juzList.forEach(juz => completedJuz.add(juz));
-
-    });
-
-
-
-    const completedJuzCount = completedJuz.size;
-
-    const remainingJuzCount = 30 - completedJuzCount;
-
-    const completionRate = ((completedJuzCount / 30) * 100).toFixed(2);
-
-
-
-    document.getElementById("progress").innerHTML = `
-
-        ✅ نسبة الختم: ${completionRate}% <br>
-
-        ✅ الأجزاء المكتملة: ${completedJuzCount} / 30 <br>
-
-        ❌ الأجزاء المتبقية: ${remainingJuzCount} جزء
-
-    `;
-
-}
-
+    
+    
+        // إنشاء كائن لتتبع عدد السور المكتملة في كل جزء
+    
+        const juzCompletion = {};
+    
+    
+    
+        // حصر كل الأجزاء المتاحة في المصحف
+    
+        surahs.forEach(surah => {
+    
+            surah.juz.forEach(juz => {
+    
+                if (!juzCompletion[juz]) {
+    
+                    juzCompletion[juz] = { totalSurahs: 0, completedSurahs: 0 };
+    
+                }
+    
+                juzCompletion[juz].totalSurahs += 1; // زيادة عدد السور في هذا الجزء
+    
+            });
+    
+        });
+    
+    
+    
+        // عد السور المكتملة في كل جزء
+    
+        checkedBoxes.forEach(checkbox => {
+    
+            const juzList = JSON.parse(checkbox.dataset.juz);
+    
+            juzList.forEach(juz => {
+    
+                if (juzCompletion[juz]) {
+    
+                    juzCompletion[juz].completedSurahs += 1;
+    
+                }
+    
+            });
+    
+        });
+    
+    
+    
+        // حساب عدد الأجزاء المكتملة بناءً على السور
+    
+        let completedJuzCount = 0;
+    
+        Object.keys(juzCompletion).forEach(juz => {
+    
+            if (juzCompletion[juz].completedSurahs === juzCompletion[juz].totalSurahs) {
+    
+                completedJuzCount += 1;
+    
+            }
+    
+        });
+    
+    
+    
+        const remainingJuzCount = 30 - completedJuzCount;
+    
+        const completionRate = ((completedJuzCount / 30) * 100).toFixed(2);
+    
+    
+    
+        // تحديث عرض التقدم
+    
+        document.getElementById("progress").innerHTML = `
+    
+            ✅ نسبة الختم: ${completionRate}% <br>
+    
+            ✅ الأجزاء المكتملة: ${completedJuzCount} / 30 <br>
+    
+            ❌ الأجزاء المتبقية: ${remainingJuzCount} جزء
+    
+        `;
+    
+    }
+    
+    
