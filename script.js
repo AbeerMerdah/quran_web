@@ -204,87 +204,63 @@ function calculateProgress() {
    
     
     
-    
-        // إنشاء كائن لتتبع عدد السور المكتملة في كل جزء
-    
-        const juzCompletion = {};
-    
-    
-    
-        // حصر كل الأجزاء المتاحة في المصحف
-    
-        surahs.forEach(surah => {
-    
-            surah.juz.forEach(juz => {
-    
-                if (!juzCompletion[juz]) {
-    
-                    juzCompletion[juz] = { totalSurahs: 0, completedSurahs: 0 };
-    
-                }
-    
-                juzCompletion[juz].totalSurahs += 1; // زيادة عدد السور في هذا الجزء
-    
-            });
-    
-        });
-    
-    
-    
-        // عد السور المكتملة في كل جزء
-    
-        checkedBoxes.forEach(checkbox => {
-    
-            const juzList = JSON.parse(checkbox.dataset.juz);
-    
-            juzList.forEach(juz => {
-    
-                if (juzCompletion[juz]) {
-    
-                    juzCompletion[juz].completedSurahs += 1;
-    
-                }
-    
-            });
-    
-        });
-    
-    
-    
-        // حساب عدد الأجزاء المكتملة بناءً على السور
-    
-        let completedJuzCount = 0;
-    
-        Object.keys(juzCompletion).forEach(juz => {
-    
-            if (juzCompletion[juz].completedSurahs === juzCompletion[juz].totalSurahs) {
-    
-                completedJuzCount += 1;
-    
-            }
-    
-        });
-    
-    
-    
-        const remainingJuzCount = 30 - completedJuzCount;
-    
-        const completionRate = ((completedJuzCount / 30) * 100).toFixed(2);
-    
-    
-    
-        // تحديث عرض التقدم
-    
-        document.getElementById("progress").innerHTML = `
-    
-            ✅ نسبة الختم: ${completionRate}% <br>
-    
-            ✅ الأجزاء المكتملة: ${completedJuzCount} / 30 <br>
-    
-            ❌ الأجزاء المتبقية: ${remainingJuzCount} جزء
-    
-        `;
-    
-    }
-    
-    
+    // تعريف عدد السور في كل جزء
+
+    const juzSurahs = {
+
+        30: ["النبأ", "النازعات", "عبس", "التكوير", "الإنفطار", "المطففين", "الإنشقاق", "البروج", "الطارق", "الأعلى", "الغاشية", "الفجر", "البلد", "الشمس", "الليل", "الضحى", "الشرح", "التين", "العلق", "القدر", "البينة", "الزلزلة", "العاديات", "القارعة", "التكاثر", "العصر", "الهمزة", "الفيل", "قريش", "الماعون", "الكوثر", "الكافرون", "النصر", "المسد", "الإخلاص", "الفلق", "الناس"]
+
+        // أضف باقي الأجزاء بنفس الطريقة إذا لزم الأمر
+
+    };
+
+
+
+    let totalSurahs = 114; // مجموع سور القرآن الكريم
+
+    let completedSurahs = checkedBoxes.length; // عدد السور المختارة
+
+    let completionRate = ((completedSurahs / totalSurahs) * 100).toFixed(2);
+
+
+
+    // حساب عدد الأجزاء المكتملة
+
+    let completedJuzCount = 0;
+
+    Object.keys(juzSurahs).forEach(juz => {
+
+        let juzCompleted = juzSurahs[juz].every(surah => 
+
+            [...checkedBoxes].some(box => box.dataset.surah === surah)
+
+        );
+
+        if (juzCompleted) {
+
+            completedJuzCount += 1;
+
+        }
+
+    });
+
+
+
+    const remainingJuzCount = 30 - completedJuzCount;
+
+
+
+    // تحديث عرض التقدم
+
+    document.getElementById("progress").innerHTML = `
+
+        ✅ نسبة الختم: ${completionRate}% <br>
+
+        ✅ الأجزاء المكتملة: ${completedJuzCount} / 30 <br>
+
+        ❌ الأجزاء المتبقية: ${remainingJuzCount} جزء
+
+    `;
+
+}
+
