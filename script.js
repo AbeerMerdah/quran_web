@@ -202,67 +202,29 @@ function calculateProgress() {
 
 
 
-    // قائمة السور حسب الأجزاء (يجب التأكد أن جميع السور مضبوطة هنا)
+    // إنشاء مجموعة للأجزاء المكتملة
 
-    const juzSurahs = {
+    const completedJuz = new Set();
 
-        30: ["النبأ", "النازعات", "عبس", "التكوير", "الإنفطار", "المطففين", "الإنشقاق", "البروج", "الطارق", "الأعلى", "الغاشية", "الفجر", "البلد", "الشمس", "الليل", "الضحى", "الشرح", "التين", "العلق", "القدر", "البينة", "الزلزلة", "العاديات", "القارعة", "التكاثر", "العصر", "الهمزة", "الفيل", "قريش", "الماعون", "الكوثر", "الكافرون", "النصر", "المسد", "الإخلاص", "الفلق", "الناس"],
+    
 
-        29: ["الملك", "القلم", "الحاقة", "المعارج", "نوح", "الجن", "المزمل", "المدثر", "القيامة", "الإنسان", "المرسلات"],
-        28: ["الحديد", "المجادلة", "الحشر", "الممتحنة", "الصف", "الجمعة", "المنافقون", "التغابن", "الطلاق", "التحريم"]
+    checkedBoxes.forEach(checkbox => {
 
+        const juzList = JSON.parse(checkbox.dataset.juz); // استرجاع قائمة الأجزاء
 
-        // أضف باقي الأجزاء بنفس الطريقة...
-
-    };
-
-
-
-    let totalSurahs = 114; // عدد سور القرآن الكريم
-
-    let completedSurahs = 0; // عدد السور المختارة
-
-    let completedJuzCount = 0; // عدد الأجزاء المكتملة
-
-
-
-    // تحويل قائمة السور المختارة إلى مصفوفة للحصول على أسماء السور
-
-    let selectedSurahs = new Set([...checkedBoxes].map(box => box.dataset.surah));
-
-
-
-    // حساب عدد السور المختارة
-
-    completedSurahs = selectedSurahs.size;
-
-
-
-    // التحقق من الأجزاء المكتملة
-
-    Object.keys(juzSurahs).forEach(juz => {
-
-        let allSurahsCompleted = juzSurahs[juz].every(surah => selectedSurahs.has(surah));
-
-        if (allSurahsCompleted) {
-
-            completedJuzCount += 1;
-
-        }
+        juzList.forEach(juz => completedJuz.add(juz));
 
     });
 
 
 
-    // حساب النسبة
+    const completedJuzCount = completedJuz.size;
 
-    let completionRate = ((completedSurahs / totalSurahs) * 100).toFixed(2);
+    const remainingJuzCount = 30 - completedJuzCount;
 
-    let remainingJuzCount = 30 - completedJuzCount;
+    const completionRate = ((completedJuzCount / 30) * 100).toFixed(2);
 
 
-
-    // تحديث العرض
 
     document.getElementById("progress").innerHTML = `
 
