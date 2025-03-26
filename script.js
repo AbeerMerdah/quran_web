@@ -196,21 +196,21 @@ surahs.forEach(surah => {
 });
 
 
-
 function calculateProgress() {
 
     const checkedBoxes = document.querySelectorAll("input[type='checkbox']:checked");
 
-   
-    
-    
-    // تعريف عدد السور في كل جزء
+
+
+    // قائمة السور حسب الأجزاء (يجب التأكد أن جميع السور مضبوطة هنا)
 
     const juzSurahs = {
 
-        30: ["النبأ", "النازعات", "عبس", "التكوير", "الإنفطار", "المطففين", "الإنشقاق", "البروج", "الطارق", "الأعلى", "الغاشية", "الفجر", "البلد", "الشمس", "الليل", "الضحى", "الشرح", "التين", "العلق", "القدر", "البينة", "الزلزلة", "العاديات", "القارعة", "التكاثر", "العصر", "الهمزة", "الفيل", "قريش", "الماعون", "الكوثر", "الكافرون", "النصر", "المسد", "الإخلاص", "الفلق", "الناس"]
+        30: ["النبأ", "النازعات", "عبس", "التكوير", "الإنفطار", "المطففين", "الإنشقاق", "البروج", "الطارق", "الأعلى", "الغاشية", "الفجر", "البلد", "الشمس", "الليل", "الضحى", "الشرح", "التين", "العلق", "القدر", "البينة", "الزلزلة", "العاديات", "القارعة", "التكاثر", "العصر", "الهمزة", "الفيل", "قريش", "الماعون", "الكوثر", "الكافرون", "النصر", "المسد", "الإخلاص", "الفلق", "الناس"],
 
-        // أضف باقي الأجزاء بنفس الطريقة إذا لزم الأمر
+        29: ["الملك", "القلم", "الحاقة", "المعارج", "نوح", "الجن", "المزمل", "المدثر", "القيامة", "الإنسان", "المرسلات"]
+
+        // أضف باقي الأجزاء بنفس الطريقة...
 
     };
 
@@ -218,25 +218,31 @@ function calculateProgress() {
 
     let totalSurahs = 114; // مجموع سور القرآن الكريم
 
-    let completedSurahs = checkedBoxes.length; // عدد السور المختارة
+    let completedSurahs = 0; // عدد السور المختارة
 
-    let completionRate = ((completedSurahs / totalSurahs) * 100).toFixed(2);
+    let completedJuzCount = 0; // عدد الأجزاء المكتملة
 
 
 
-    // حساب عدد الأجزاء المكتملة
+    // تحويل قائمة السور المختارة إلى مصفوفة للحصول على الأسماء
 
-    let completedJuzCount = 0;
+    let selectedSurahs = [...checkedBoxes].map(box => box.dataset.surah);
+
+
+
+    // حساب عدد السور المختارة
+
+    completedSurahs = selectedSurahs.length;
+
+
+
+    // التحقق من الأجزاء المكتملة
 
     Object.keys(juzSurahs).forEach(juz => {
 
-        let juzCompleted = juzSurahs[juz].every(surah => 
+        let allSurahsCompleted = juzSurahs[juz].every(surah => selectedSurahs.includes(surah));
 
-            [...checkedBoxes].some(box => box.dataset.surah === surah)
-
-        );
-
-        if (juzCompleted) {
+        if (allSurahsCompleted) {
 
             completedJuzCount += 1;
 
@@ -246,11 +252,15 @@ function calculateProgress() {
 
 
 
-    const remainingJuzCount = 30 - completedJuzCount;
+    // حساب النسبة
+
+    let completionRate = ((completedSurahs / totalSurahs) * 100).toFixed(2);
+
+    let remainingJuzCount = 30 - completedJuzCount;
 
 
 
-    // تحديث عرض التقدم
+    // تحديث العرض
 
     document.getElementById("progress").innerHTML = `
 
